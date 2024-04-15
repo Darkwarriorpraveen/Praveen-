@@ -1,0 +1,45 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <chrono>
+#include <iomanip>
+
+// Simple SHA-256 hash function (for demonstration purposes only)
+std::string sha256(const std::string& input) {
+    return input; // Placeholder implementation, actual hashing algorithm is much more complex
+}
+
+// Mining function
+std::string mineBlock(const std::string& blockData, int difficulty) {
+    std::string target(difficulty, '0'); // Target string with 'difficulty' leading zeroes
+    std::string nonce = "0"; // Nonce starts at 0
+
+    auto startTime = std::chrono::steady_clock::now(); // Start time for measuring mining duration
+
+    while (true) {
+        std::string hash = sha256(blockData + nonce); // Calculate hash with block data and nonce
+        if (hash.substr(0, difficulty) == target) { // Check if hash meets target difficulty
+            auto endTime = std::chrono::steady_clock::now(); // End time for measuring mining duration
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count(); // Mining duration
+            std::cout << "Block mined successfully!\n";
+            std::cout << "Nonce: " << nonce << "\n";
+            std::cout << "Hash: " << hash << "\n";
+            std::cout << "Mining duration: " << duration << " milliseconds\n";
+            return hash; // Return mined hash
+        }
+        nonce = std::to_string(std::stoi(nonce) + 1); // Increment nonce for next iteration
+    }
+}
+
+int main() {
+    // Block data (can include transactions, timestamps, etc.)
+    std::string blockData = "Block data goes here";
+
+    // Difficulty level (number of leading zeroes required in hash)
+    int difficulty = 4;
+
+    // Mine block
+    std::string minedHash = mineBlock(blockData, difficulty);
+
+    return 0;
+}
